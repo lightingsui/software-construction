@@ -1,6 +1,6 @@
 ## 电厂管理系统
 
-![](https://img.shields.io/badge/软件构造-tyust-green.svg)![](https://img.shields.io/badge/SQL-数据库-cyan.svg)![带logo社交样式](https://img.shields.io/badge/GitHub-JavaGUI-yellow.svg?style=social&logo=github)
+![](https://img.shields.io/badge/软件构造-tyust-green.svg) ![](https://img.shields.io/badge/SQL-数据库-cyan.svg) ![](https://img.shields.io/badge/GitHub-JavaGUI-yellow.svg?style=social&logo=github)
 
 ## 简介
 
