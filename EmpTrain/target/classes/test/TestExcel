@@ -1,0 +1,124 @@
+前段时间正好做了，导入和导出的，你自己看吧
+ /**导出数据为XLS格式
+  * @param fos
+  * @param bo
+  */
+ public void writeExcelBo(FileOutputStream fos, java.util.Vector ve)
+ {
+  jxl.write.WritableWorkbook wwb;
+  try
+  {
+   wwb= Workbook.createWorkbook(fos);
+   jxl.write.WritableSheet ws= wwb.createSheet("booksheet", 10);
+   ws.addCell(new jxl.write.Label(0, 1, "书目ID"));
+   ws.addCell(new jxl.write.Label(1, 1, "ISBN"));
+   ws.addCell(new jxl.write.Label(2, 1, "定价"));
+   ws.addCell(new jxl.write.Label(3, 1, "书名"));
+   ws.addCell(new jxl.write.Label(4, 1, "原书名"));
+   ws.addCell(new jxl.write.Label(5, 1, "副题名"));
+   ws.addCell(new jxl.write.Label(6, 1, "著者"));
+   ws.addCell(new jxl.write.Label(7, 1, "译者"));
+   ws.addCell(new jxl.write.Label(8, 1, "版次"));
+   ws.addCell(new jxl.write.Label(9, 1, "出版地"));
+   ws.addCell(new jxl.write.Label(10, 1, "出版社"));
+   ws.addCell(new jxl.write.Label(11, 1, "出版日期"));
+   ws.addCell(new jxl.write.Label(12, 1, "页数"));
+   ws.addCell(new jxl.write.Label(13, 1, "书高"));
+   ws.addCell(new jxl.write.Label(14, 1, "装帧"));
+   ws.addCell(new jxl.write.Label(15, 1, "丛书名"));
+   ws.addCell(new jxl.write.Label(16, 1, "一般性附注项"));
+   ws.addCell(new jxl.write.Label(17, 1, "简介"));
+   ws.addCell(new jxl.write.Label(18, 1, "主题词"));
+   ws.addCell(new jxl.write.Label(19, 1, "中图法分类"));
+   ws.addCell(new jxl.write.Label(20, 1, "更新日期"));
+   ws.addCell(new jxl.write.Label(21, 1, "本数"));
+   book=new Book[ve.size()];
+   for (int i= 0; i < ve.size(); i++)
+   {
+    book[i]= (Book)ve.get(i);
+    ws.addCell(new jxl.write.Label(0, i + 2, "" + book[i].getBookId()));
+    ws.addCell(new jxl.write.Label(1, i + 2, book[i].getIsbn()));
+    ws.addCell(new jxl.write.Label(2, i + 2, "" + book[i].getPrice()));
+    ws.addCell(new jxl.write.Label(3, i + 2, book[i].getBookTitle()));
+    ws.addCell(new jxl.write.Label(4, i + 2, book[i].getOldFilename()));
+    ws.addCell(new jxl.write.Label(5, i + 2, book[i].getSubTitle()));
+    ws.addCell(new jxl.write.Label(6, i + 2, book[i].getWriter()));
+    ws.addCell(new jxl.write.Label(7, i + 2, book[i].getTranscribe()));
+    ws.addCell(new jxl.write.Label(8, i + 2, "" + book[i].getVersion()));
+    ws.addCell(new jxl.write.Label(9, i + 2, book[i].getPublishCity()));
+    ws.addCell(new jxl.write.Label(10, i + 2, book[i].getPublisher()));
+    ws.addCell(new jxl.write.Label(11, i + 2, book[i].getPublishDate().toString()));
+    ws.addCell(new jxl.write.Label(12, i + 2, "" + book[i].getPage()));
+    ws.addCell(new jxl.write.Label(13, i + 2, "" + book[i].getHight()));
+    ws.addCell(new jxl.write.Label(14, i + 2, book[i].getInstall()));
+    ws.addCell(new jxl.write.Label(15, i + 2, book[i].getSeries()));
+    ws.addCell(new jxl.write.Label(16, i + 2, book[i].getNotes()));
+    ws.addCell(new jxl.write.Label(17, i + 2, book[i].getPrecisnotes()));
+    ws.addCell(new jxl.write.Label(18, i + 2, book[i].getSubject()));
+    ws.addCell(new jxl.write.Label(19, i + 2, book[i].getCls().replaceAll("_", "")));
+    ws.addCell(new jxl.write.Label(20, i + 2, book[i].getUpdatedate().toString()));
+    ws.addCell(new jxl.write.Label(21, i + 2, "0"));
+   }
+   jxl.write.WritableFont wfc=
+    new jxl.write.WritableFont(
+     WritableFont.ARIAL,
+     255,
+     WritableFont.BOLD,
+     false,
+     UnderlineStyle.NO_UNDERLINE,
+     jxl.format.Colour.BLACK);
+   jxl.write.WritableCellFormat wcfFC= new jxl.write.WritableCellFormat(wfc);
+   ws.addCell(new jxl.write.Label(0, 0, "为保证您提交定单的稳定和正确，导入定单时候请勿更改此表格式（请勿更改书目ID,订购本数自行添加！）"));
+   wwb.write();
+   //关闭Excel工作薄对象
+   wwb.close();
+  } catch (IOException e)
+  {} catch (RowsExceededException e)
+  {} catch (WriteException e)
+  {}
+ }
+  
+  
+   //导入EXCEL
+   if (f.getName().indexOf(".xls") > 0)
+   {
+    try
+    {
+     fis= new FileInputStream(f);
+     BookBean bob= new BookBean();
+     UserBean usb= new UserBean();
+     jxl.Workbook rwb= Workbook.getWorkbook(fis);
+     jxl.Sheet sh= rwb.getSheet(0);
+     int rowCount= sh.getRows();
+     SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
+     book= new Book[rowCount - 1];
+     for (int i= 1; i < rowCount; i++)
+     {
+      book[i - 1]= new Book();
+      jxl.Cell[] ce= sh.getRow(i);
+      book[i - 1].setIsbn(ce[0].getContents().toString());
+      book[i - 1].setSeries(ce[1].getContents().toString());
+      book[i - 1].setBookTitle(ce[2].getContents().toString());
+      book[i - 1].setWriter(ce[3].getContents().toString());
+      book[i - 1].setTranscribe(ce[4].getContents().toString());
+      book[i - 1].setPublisher(ce[5].getContents().toString());
+      book[i - 1].setPublishDate(sdf.parse(ce[6].getContents().toString(), new ParsePosition(0)));
+      book[<a href="https://www.baidu.com/s?wd=i-1&tn=44039180_cpr&fenlei=mv6quAkxTZn0IZRqIHckPjm4nH00T1dBPHIbP16vPAFhrjKBPH0z0AP8IA3qPjfsn1bkrjKxmLKz0ZNzUjdCIZwsrBtEXh9GuA7EQhF9pywdQhPEUiqkIyN1IA-EUBtvnWf3rjm3nWbdP1DYrjTdPWf" target="_blank" class="baidu-highlight">i-1</a>].setVersion(Integer.parseInt(ce[7].getContents().toString()));
+      book[<a href="https://www.baidu.com/s?wd=i-1&tn=44039180_cpr&fenlei=mv6quAkxTZn0IZRqIHckPjm4nH00T1dBPHIbP16vPAFhrjKBPH0z0AP8IA3qPjfsn1bkrjKxmLKz0ZNzUjdCIZwsrBtEXh9GuA7EQhF9pywdQhPEUiqkIyN1IA-EUBtvnWf3rjm3nWbdP1DYrjTdPWf" target="_blank" class="baidu-highlight">i-1</a>].setPage(Integer.parseInt(ce[8].getContents().toString()));
+      book[<a href="https://www.baidu.com/s?wd=i-1&tn=44039180_cpr&fenlei=mv6quAkxTZn0IZRqIHckPjm4nH00T1dBPHIbP16vPAFhrjKBPH0z0AP8IA3qPjfsn1bkrjKxmLKz0ZNzUjdCIZwsrBtEXh9GuA7EQhF9pywdQhPEUiqkIyN1IA-EUBtvnWf3rjm3nWbdP1DYrjTdPWf" target="_blank" class="baidu-highlight">i-1</a>].setCls(ce[9].getContents().toString());
+      book[i-1].setPrecisnotes(ce[10].getContents().toString());
+      book[i-1].setInstall(ce[11].getContents().toString());
+      book[i-1].setPrice(Float.parseFloat(ce[12].getContents().toString()));
+      book[i-1].setUserid(usb.getUser().getUserid());
+      getVector().addElement(book[i - 1]);
+     }
+     rwb.close();
+     fis.close();
+    } catch (FileNotFoundException e)
+    {} catch (BiffException e)
+    {} catch (IOException e)
+    {} catch (NumberFormatException e)
+    {
+     ShowMessage("数据导入失败，请按照本软件要求的EXCEL格式导入定单");
+    }
+   }
